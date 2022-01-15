@@ -86,7 +86,7 @@ const config = {
     ],
     devServer: {
         port: 5000,
-        liveReload: false,
+        liveReload: true,
         hot: true
     },
 };

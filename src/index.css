@@ -1,0 +1,49 @@
+body {
+    color: white;
+    font-family: 'Oswald', sans-serif;
+}
+
+nav {
+    background-color: black !important;
+}
+
+#initVerse {
+    background-color: transparent;
+    padding-left: 40px;
+    padding-right: 40px;
+    text-align: center;
+    margin-right: 10px;
+    border: 2px solid white;
+    border-radius: 10px;
+}
+
+.sidenav-trigger {
+    float: unset !important;
+    position: unset !important;
+    z-index: unset !important;
+    height: unset !important;
+    margin: unset !important;
+}
+
+.brand-logo {
+    margin-top: -30px;
+}
+
+.material-icons {
+    display: inline !important;
+    vertical-align: middle !important;
+}
+
+.btn-small {
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 10px;
+    color: white;
+}
+li {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+#modal2 {
+    background-color: transparent;
+}

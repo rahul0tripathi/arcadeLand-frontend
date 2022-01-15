@@ -8,7 +8,8 @@
   "license": "MIT",
   "dependencies": {
     "materialize-css": "^1.0.0",
-    "phaser": "^3.55.2"
+    "phaser": "^3.55.2",
+    "web3": "^1.6.1"
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve",

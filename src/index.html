@@ -4,27 +4,28 @@
     <meta charset="UTF-8">
     <meta content="user-scalable=no, width=device-width, initial-scale=1.0" name="viewport">
     <title>Miniverse ~ explore the metaverse</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Megrim&family=Oswald:wght@300;400&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Megrim&family=Oswald:wght@300;400&family=Press+Start+2P&display=swap"
+          rel="stylesheet">
 </head>
 <body style="background-color: black">
 
 <div class="navbar-fixed">
     <nav>
         <div class="nav-wrapper">
-            <a href="#!" class="brand-logo center"><p style="font-family: 'Press Start 2P', cursive; font-size: 30px;
+            <a class="brand-logo center" href="#!"><p style="font-family: 'Press Start 2P', cursive; font-size: 30px;
 "><img src="assets/static/logo.png" style="height: 40px">ARC</p></a>
             <ul class="right hide-on-med-and-down">
                 <li>
                     <div><i class="material-icons">location_on</i> 001</div>
                 </li>
                 <li>
-                    <div class="btn-large -trisidenavgger" data-target="slide-out">
+                    <div class="btn-large" id ="connnectOrInspect" data-target="slide-out">
                         <img src="https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg"
                              style="height: 50px; width: 40px; vertical-align: middle; display: inline">
                         Connect To Wallet
@@ -36,7 +37,7 @@
     </nav>
 </div>
 
-<ul id="slide-out" class="sidenav" style="background-color: transparent">
+<ul class="sidenav" id="slide-out" style="background-color: white">
     <li>
         <div class="user-view">
             <div class="background">
@@ -63,23 +64,23 @@
         </div>
     </div>
 </footer>
-<div id="modal1" class="modal" style="background-color: black; height: 60vh;width: 60vw">
+<div class="modal" id="modal1" style="background-color: black; height: 60vh;width: 60vw">
     <div class="modal-content">
         <h4>Modal Header</h4>
         <p>A bunch of text</p>
     </div>
     <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        <a class="modal-close waves-effect waves-green btn-flat" href="#!">Agree</a>
     </div>
 </div>
 <!-- Modal Structure -->
-<div id="modal2" class="modal  bottom-sheet">
+<div class="modal  bottom-sheet" id="modal2">
     <div class="modal-content">
         <h4>Modal Header</h4>
         <p>A bunch of text</p>
     </div>
     <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        <a class="modal-close waves-effect waves-green btn-flat" href="#!">Agree</a>
     </div>
 </div>
 </body>

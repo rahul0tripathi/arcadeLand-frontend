@@ -16,7 +16,7 @@ declare global {
         genLayer: Layer;
         runningScene: Phaser.Scene;
         verseBase: Object,
-        nftList:Nft[]
+        nftList: Nft[]
     }
 }
 let gameConfig: Types.Core.GameConfig = {
@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         let layerURL;
         if (val) {
             layerURL = await web3.getLayerDataURL(parseInt(val))
+
             window.localStorage.clear()
         } else {
             layerURL = await web3.getLayerDataURL()
@@ -65,6 +66,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         let layer = await GetLayerMetaData(layerURL)
         if (layer) {
             window.layer = layer
+            if (val) await web3.updateRentedLands(val)
+            window.nftList = web3.rentedNftList
             window.game = new Game(gameConfig);
             window.game.events.on('ready', () => {
                 window.runningScene = window.game.scene.add("init", InitScene, true)
@@ -104,25 +107,16 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById("deny")!.addEventListener('click', () => {
         web3.approve(false)
     })
-
-
-});
-const handlerInspector = (e: KeyboardEvent) => {
-    if (e.key == 'x') {
-        console.log(modalInstance)
+    document.getElementById("rent")!.addEventListener('click', () => {
         if (modalInstance.isOpen) {
             modalInstance.close()
         } else {
             modalInstance.open()
         }
+    })
 
-    }
 
-}
-
-document.addEventListener('keydown',
-    handlerInspector
-);
+});
 
 
 //window.game = new Game(gameConfig);

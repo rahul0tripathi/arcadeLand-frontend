@@ -87,7 +87,7 @@ export class InitScene extends Scene {
         this.map.init(this, this.cameras.main, [...this.assetNK, ...this.nftList])
 
         this.player = new Actor(this, 'player', this.cursorKeys, 175)
-        this.player.Resize(0.8, 0.8)
+        this.player.Resize(1.25, 1.25)
         this.player.Teleport(this.map.getWidth() / 5, this.map.getHeight() / 5)
         this.player.InitAnimations()
         this.map.addCollision(this, this.player)

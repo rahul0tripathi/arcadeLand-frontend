@@ -52,34 +52,8 @@ export default class Chain {
             });
             if (this.alreadyMinted) {
                 this.tokenId = await this.contract?.methods.tokenOfOwnerByIndex(this.userAddress, 0).call()
-                let addr = await this.contract?.methods.lands(this.tokenId).call();
-                console.log(addr)
                 // @ts-ignore
-                this.landContract = new this.provider.eth.Contract(Land.abi, addr)
-                let rentedLands = await this.landContract.methods.getRentedLands().call();
-
-                for (let rent of rentedLands) {
-                    // @ts-ignore
-                    let nftContract = new this.provider.eth.Contract(ERC721.abi, "0xee29727e946d3b1b6a8c0a97b1058bdff7e9bec3")
-                    console.log(rent[1][7])
-                    let tokenURI = await nftContract.methods.tokenURI(Web3.utils.toBN(297)).call()
-                    let data = await fetch(tokenURI).then(r => r.json());
-                    console.log(data)
-                    if (data?.image) {
-                        this.rentedNftList.push({
-                            ...genNftNK(`${rent[1][3]}`),
-                            owner: rent[1][0],
-                            url: `https://ik.imagekit.io/0otpum7apgg/tr:w-${parseInt(rent[1][3]) * 16},h-${parseInt(rent[1][4]) * 16}/${data.image}`,
-                            x: parseInt(rent[1][1]),
-                            y: parseInt(rent[1][2]),
-                            width: parseInt(rent[1][3]) * 16,
-                            height: parseInt(rent[1][4]) * 16,
-                            data: JSON.stringify(data)
-                        })
-                    }
-
-                    console.log(this.rentedNftList)
-                }
+                await this.updateRentedLands(this.tokenId)
 
             }
 
@@ -156,8 +130,20 @@ export default class Chain {
     }
 
     public async getTokenToApprove() {
-        if (!await this.isProposalQueueEmpty()) {
-            return await this.landContract?.methods._rents(await this.landContract!.methods.pendingProposal().call()).call()
+        if (!await this.isProposalQueueEmpty() && this.alreadyMinted) {
+            let _proposal = await this.landContract?.methods._rents(await this.landContract!.methods.pendingProposal().call()).call()
+            if (_proposal[0]) {
+                // @ts-ignore
+                return {
+                    address: _proposal[1][0],
+                    amount: _proposal.amount,
+                    contractAddress: _proposal[1][7],
+                    tokenId: _proposal[1][6]
+                }
+            } else {
+                return null
+            }
+
         } else {
             return null
         }
@@ -171,6 +157,35 @@ export default class Chain {
             return true
         } else {
             return null
+        }
+    }
+//0xEE29727e946d3B1B6a8c0a97B1058BDff7e9bEc3
+    public async updateRentedLands(tokenId: string) {
+        let addr = await this.contract?.methods.lands(tokenId).call();
+        // @ts-ignore
+        this.landContract = new this.provider.eth.Contract(Land.abi, addr)
+        let rentedLands = await this.landContract.methods.getRentedLands().call();
+        console.log(rentedLands)
+        for (let rent of rentedLands) {
+            // @ts-ignore
+            let nftContract = new this.provider.eth.Contract(ERC721.abi, rent[1][7])
+            console.log(rent[1][7])
+            let tokenURI = await nftContract.methods.tokenURI(Web3.utils.toBN(rent[1][6])).call()
+            let data = await fetch(tokenURI).then(r => r.json());
+            console.log(data)
+            if (data?.image) {
+                this.rentedNftList.push({
+                    ...genNftNK(`${rent[1][6]}`),
+                    owner: rent[1][0],
+                    url: `https://ik.imagekit.io/0otpum7apgg/tr:w-${parseInt(rent[1][3]) * 16},h-${parseInt(rent[1][4]) * 16}/${data.image}`,
+                    x: parseInt(rent[1][1]),
+                    y: parseInt(rent[1][2]),
+                    width: parseInt(rent[1][3]) * 16,
+                    height: parseInt(rent[1][4]) * 16,
+                    data: JSON.stringify(data)
+                })
+            }
+
         }
     }
 

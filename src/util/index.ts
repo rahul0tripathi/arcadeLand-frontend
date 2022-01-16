@@ -1,5 +1,16 @@
 import * as phaser from "phaser";
 import axios from "axios";
+import {TileSetImage} from "../classes/map";
+
+declare interface Nft extends TileSetImage {
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    url: string,
+    owner:string,
+    data:string
+}
 
 declare interface TileSetConfig {
     columns: number
@@ -98,6 +109,7 @@ enum RenderLayerErrors {
     ImageOutOfBounds,
     LocationAlreadyOccupied
 }
+
 const GetLayerMetaData = (uri: string): Promise<Layer | null> => {
     console.log(uri)
     return axios.get(uri).then(resp => {
@@ -106,7 +118,12 @@ const GetLayerMetaData = (uri: string): Promise<Layer | null> => {
         return null
     })
 }
-
+const genNftNK = (name: string) => {
+    return {
+        name,
+        key: `${name}set`
+    }
+}
 export {
     ResolveAddressPath,
     ResolveName,
@@ -120,5 +137,7 @@ export {
     Property,
     Layer,
     RenderLayerErrors,
-    GetLayerMetaData
+    GetLayerMetaData,
+    Nft,
+    genNftNK
 }

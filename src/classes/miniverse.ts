@@ -14,16 +14,20 @@ export default class Miniverse {
     renderSet: TileSetConfig[]
     allowedSets: { [key: string]: boolean }
     assetMap: { [key: string]: Tileset }
+    nftLayer: Layer
 
     constructor(map: any) {
+        console.log("called")
+        console.log(map.layers)
         this.tileset = map
+        console.log(this.tileset.layers)
         this.width = this.tileset.layers[0].data.length / this.tileset.height
         this.height = this.tileset.height
-        let layer = this.newLayerData(NFT_LAYER)
-        this.tileset.layers.push(layer)
+        this.nftLayer = this.newLayerData(NFT_LAYER)
         this.renderSet = []
         this.allowedSets = {}
         this.assetMap = {}
+        console.log(this.tileset.layers)
     }
 
     genRandomAsset() {
@@ -83,6 +87,7 @@ export default class Miniverse {
     }
 
     initAssets(assetLayer: Layer) {
+        assetLayer.id = 3
         this.tileset.layers.push(assetLayer)
         for (let set of staticSets) {
             for (let tile of set.Config) {
@@ -111,8 +116,13 @@ export default class Miniverse {
             tilewidth: 16,
         }
         let set = this.newTileSet(config)
-        this.tileset.layers[this.tileset.layers.length - 1].data = this.computeLayerData(set, initx, inity, this.tileset.layers[this.tileset.layers.length - 1].data)
+        console.log(this.tileset.layers.length)
+        this.nftLayer.data = this.computeLayerData(set, initx, inity, this.nftLayer.data)
         this.tileset.tilesets.push(set)
+    }
+
+    commitNFTlayer() {
+        this.tileset.layers.push(this.nftLayer)
     }
 
     gettileset(): Root {
@@ -140,7 +150,7 @@ export default class Miniverse {
         return {
             y: 0,
             height: this.tileset.height,
-            id: this.tileset.layers.length + 1,
+            id: name == NFT_LAYER ? 4 : 3,
             name,
             opacity: 1,
             type: "tilelayer",
@@ -177,3 +187,6 @@ export default class Miniverse {
         return layer
     }
 }
+
+
+

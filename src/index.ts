@@ -3,11 +3,9 @@ import {InitScene} from './scenes/init'
 import './index.css'
 // @ts-ignore
 import M from 'materialize-css'
-import ignore from "ignore";
 import Chain from "./chain";
 import {pinJSONToIPFS} from "./ipfs";
-import {GetLayerMetaData, Layer} from "./util";
-
+import {GetLayerMetaData, Layer, Nft} from "./util";
 
 declare global {
     interface Window {
@@ -16,6 +14,9 @@ declare global {
         enterverse: () => void
         layer: Layer;
         genLayer: Layer;
+        runningScene: Phaser.Scene;
+        verseBase: Object,
+        nftList:Nft[]
     }
 }
 let gameConfig: Types.Core.GameConfig = {
@@ -37,22 +38,40 @@ let gameConfig: Types.Core.GameConfig = {
     }, canvasStyle: `width: 100%; height: 100%`, autoFocus: true, audio: {
         noAudio: false,
     }, scene: [],
+
 }
 var modalInstance: any;
 var modalBottom: any;
 document.addEventListener('DOMContentLoaded', async function () {
     let web3 = new Chain()
     await web3.connectToWallet()
-    if (web3.connected && web3.alreadyMinted) {
-        let layerURL = await web3.getLayerDataURL()
+    window.nftList = web3.rentedNftList
+    let proposals = await web3.getTokenToApprove();
+    if (proposals) {
+        document.getElementById("proposal")!.innerText = JSON.stringify(proposals)
+    }
+    let val = window.localStorage.getItem("teleportTo")
+    window.localStorage.clear()
+    if ((web3.connected && web3.alreadyMinted) || val) {
+        let layerURL;
+        if (val) {
+            layerURL = await web3.getLayerDataURL(parseInt(val))
+            window.localStorage.clear()
+        } else {
+            layerURL = await web3.getLayerDataURL()
+        }
+
+
         let layer = await GetLayerMetaData(layerURL)
         if (layer) {
             window.layer = layer
-            console.log(layer)
-            gameConfig.scene = [InitScene]
             window.game = new Game(gameConfig);
+            window.game.events.on('ready', () => {
+                window.runningScene = window.game.scene.add("init", InitScene, true)
+
+            })
         }
-    }else{
+    } else {
         gameConfig.scene = [InitScene]
         window.game = new Game(gameConfig);
     }
@@ -68,6 +87,23 @@ document.addEventListener('DOMContentLoaded', async function () {
             web3.mint(uri);
         })
     })
+    document.getElementById("triggerRentTxn")!.addEventListener("click", async () => {
+        console.log("called")
+        await web3.newProposal()
+    })
+    let teleportBtn = document.getElementById("teleport");
+    teleportBtn!.addEventListener('click', async () => {
+        let teleportTo = parseInt((<HTMLInputElement>document.getElementById("landId"))!.value)
+
+        localStorage.setItem("teleportTo", `${teleportTo}`)
+        window.location.reload()
+    })
+    document.getElementById("approve")!.addEventListener('click', () => {
+        web3.approve(true)
+    })
+    document.getElementById("deny")!.addEventListener('click', () => {
+        web3.approve(false)
+    })
 
 
 });
@@ -77,18 +113,9 @@ const handlerInspector = (e: KeyboardEvent) => {
         if (modalInstance.isOpen) {
             modalInstance.close()
         } else {
-            let modal = document.getElementById("modal1")
-            if (modal)
-                modal.innerHTML = `<iframe style=" height: 100%; width: 100%" src="https://opensea.io/assets/0x60e4d786628fea6478f785a6d7e704777c86a7c6/7197"/>`
             modalInstance.open()
         }
 
-    } else if (e.key == 'c') {
-        if (modalBottom.isOpen) {
-            modalBottom.close()
-        } else {
-            modalBottom.open()
-        }
     }
 
 }

@@ -16,35 +16,46 @@
 <body style="background-color: black">
 
 <div class="navbar-fixed">
-    <nav>
+    <nav style="border-bottom: 2px solid white; margin-bottom: 10px">
         <div class="nav-wrapper">
             <a class="brand-logo center" href="#!"><p style="font-family: 'Press Start 2P', cursive; font-size: 30px;
 "><img src="assets/static/logo.png" style="height: 40px">ARC</p></a>
             <ul class="right hide-on-med-and-down">
                 <li>
-                    <div><i class="material-icons">location_on</i> 001</div>
+                    <div><i class="material-icons">location_on</i> <input class="validate" id="landId"
+                                                                          style="width: 70px;color: white"
+                                                                          type="number">
+                        <div class="btn-small" id="teleport" style="display: inline;height: 40px">Teleport</div>
+                    </div>
                 </li>
                 <li>
-                    <div class="btn-large" id ="connnectOrInspect" >
+                    <div class="btn-small" id="connnectOrInspect" style="height: 40px">
                         <img src="https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg"
                              style="height: 40px; width: 40px; vertical-align: middle; display: inline">
-                        <p style="display: inline" id="address">Connect To wallet</p>
+                        <p id="address" style="display: inline">Connect To wallet</p>
                     </div>
 
                 </li>
                 <li>
-                    <div class="btn-large" id ="mint" >
+                    <div class="btn-small" id="mint" style="height: 40px">
                         Mint Now!
                     </div>
                 </li>
-
+                <li>
+                    <div class="btn-small" id="rent" style="height: 40px">
+                        Rent Lands!
+                    </div>
+                </li>
             </ul>
         </div>
     </nav>
 </div>
 
 
-<div id="game-view" style="height: 100vh;width: 100vw"></div>
+<div id="game-view" style="height: 100vh;width: 100vw;">
+
+</div>
+</div>
 <footer class="page-footer" style="padding: 0px !important; background-color: black">
     <div class="footer-copyright">
         <div class="container">
@@ -53,24 +64,62 @@
         </div>
     </div>
 </footer>
-<div class="modal" id="modal1" style="background-color: black; height: 60vh;width: 60vw">
+<div class="modal" id="modal1" style="background-color: black; width: 60vw;color: white">
     <div class="modal-content">
-        <h4>Modal Header</h4>
-        <p>A bunch of text</p>
-    </div>
-    <div class="modal-footer">
-        <a class="modal-close waves-effect waves-green btn-flat" href="#!">Agree</a>
+        <form class="col s12 center">
+            <div class="row">
+                <div class="input-field col s3">
+                    <input class="validate" id="contractAddress" type="text">
+                    <label for="contractAddress">NFT Contract Address</label>
+                </div>
+                <div class="input-field col s3">
+                    <input class="validate" id="tokenId" type="number">
+                    <label for="tokenId">TokenId</label>
+                </div>
+                <div class="input-field col s3">
+                    <input class="validate" id="duration" type="number">
+                    <label for="duration">Duration (in seconds)</label>
+                </div>
+                <div class="input-field col s3">
+                    <input class="validate" id="land" type="number">
+                    <label for="duration">landId</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s3">
+                    <input class="validate" id="setX" type="number">
+                    <label for="setX">setX</label>
+                </div>
+                <div class="input-field col s3">
+                    <input class="validate" id="setY" type="number">
+                    <label for="setY">setY</label>
+                </div>
+                <div class="input-field col s3">
+                    <input class="validate" id="widthNFT" type="number">
+                    <label for="setX">width</label>
+                </div>
+                <div class="input-field col s3">
+                    <input class="validate" id="heightNFT" type="number">
+                    <label for="setX">height</label>
+                </div>
+            </div>
+        </form>
+        <div style="text-align: center;">
+            <div class="btn-small center" id="triggerRentTxn" style="height: 40px">
+                Rent Now!
+            </div>
+        </div>
+        <div class="row">
+            <div id="proposal"></div>
+            <div class="btn-small" id="approve" style="height: 40px">
+                approve
+            </div>
+            <div class="btn-small" id="deny" style="height: 40px">
+                deny
+            </div>
+        </div>
     </div>
 </div>
-<!-- Modal Structure -->
-<div class="modal  bottom-sheet" id="modal2">
-    <div class="modal-content">
-        <h4>Modal Header</h4>
-        <p>A bunch of text</p>
-    </div>
-    <div class="modal-footer">
-        <a class="modal-close waves-effect waves-green btn-flat" href="#!">Agree</a>
-    </div>
-</div>
+
 </body>
 </html>

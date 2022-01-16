@@ -12,7 +12,7 @@ export class Map {
     map!: Tilemaps.Tilemap
     tilemapLayers!: Tilemaps.Tileset[]
     scale: integer
-    layers!: { genesis: Tilemaps.TilemapLayer, plants: Tilemaps.TilemapLayer, nft: Tilemaps.TilemapLayer, assets:Tilemaps.TilemapLayer }
+    layers!: { genesis: Tilemaps.TilemapLayer, plants: Tilemaps.TilemapLayer, nft: Tilemaps.TilemapLayer, assets: Tilemaps.TilemapLayer }
 
     constructor(scale: integer) {
         this.scale = scale
@@ -33,9 +33,11 @@ export class Map {
         scene.physics.add.collider(player, this.layers.plants);
         scene.physics.add.collider(player, this.layers.genesis);
     }
-    phaserMap(){
+
+    phaserMap() {
         return this.map
     }
+
     init(scene: Scene, camera: Cameras.Scene2D.Camera, images: TileSetImage[] = []): void {
         this.map = scene.make.tilemap({
             key: "map"
@@ -48,7 +50,7 @@ export class Map {
             this.map.addTilesetImage("island", "island"),
             this.map.addTilesetImage("plants", "plants"),
             this.map.addTilesetImage("showcase", "floor"),
-            ...images.map(img =>{
+            ...images.map(img => {
                 return this.map.addTilesetImage(img.name, img.key)
             })
         ]
@@ -74,8 +76,8 @@ export class Map {
     }
 
     getTileAt(x: number, y: number, camera: Cameras.Scene2D.Camera) {
-        const test = this.map.getTileAtWorldXY(x, y, false, camera, this.layers.nft)
-        console.log(test)
+        return this.map.getTileAtWorldXY(x, y, false, camera, this.layers.nft)
+
     }
 
 }

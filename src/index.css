@@ -24,7 +24,9 @@ nav {
     height: unset !important;
     margin: unset !important;
 }
-
+input {
+    color: white;
+}
 .brand-logo {
     margin-top: -30px;
 }
@@ -34,16 +36,16 @@ nav {
     vertical-align: middle !important;
 }
 
-#connnectOrInspect {
-    background-color: transparent;
-    border: 2px solid white;
-    border-radius: 10px;
-    color: white;
+#game-view {
+    background-size: 50vh;
+    background:url("assets/static/background.png") no-repeat center;
 }
+
 li {
     margin-right: 10px;
     margin-left: 10px;
 }
+
 #modal2 {
     background-color: transparent;
 }

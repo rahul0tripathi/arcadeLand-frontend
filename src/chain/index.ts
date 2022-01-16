@@ -28,9 +28,20 @@ export default class Chain {
 
     public connectToWallet = async () => {
         if (window.ethereum) {
-            let account = await window.ethereum.send('eth_requestAccounts');
+
             this.provider = new Web3(window.ethereum);
-            this.userAddress = account.result[0]
+            // @ts-ignore
+            try {
+                let account = await this.provider.eth.getAccounts()
+                this.userAddress = account[0]
+            } catch (err) {
+                // @ts-ignore
+                await this.provider.currentProvider.enable()
+                let account = await this.provider.eth.getAccounts()
+
+                this.userAddress = account[0]
+            }
+
             let e = document.getElementById("address");
             if (e)
                 e.innerText = this.userAddress.substring(0, 8) + '...'
@@ -159,6 +170,7 @@ export default class Chain {
             return null
         }
     }
+
 //0xEE29727e946d3B1B6a8c0a97B1058BDff7e9bEc3
     public async updateRentedLands(tokenId: string) {
         let addr = await this.contract?.methods.lands(tokenId).call();

@@ -49,7 +49,6 @@ export class Map {
             this.map.addTilesetImage("plants", "plants"),
             this.map.addTilesetImage("showcase", "floor"),
             ...images.map(img =>{
-                console.log(img)
                 return this.map.addTilesetImage(img.name, img.key)
             })
         ]

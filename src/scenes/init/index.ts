@@ -3,9 +3,11 @@ import Actor from "../../classes/Actor";
 import {Map, TileSetImage} from "../../classes/map";
 import miniverse from "../../assets/tileset/miniverse.json";
 import Miniverse from "../../classes/miniverse";
-import {LoadTileSetToScene} from "../../util";
+import {Layer, LoadTileSetToScene} from "../../util";
 import staticSets from "../../assets/tileset/index";
 import {SCALE} from "../../config";
+import {pinJSONToIPFS} from "../../ipfs";
+import Chain from "../../chain";
 
 declare interface Nft extends TileSetImage {
     x: number,
@@ -14,7 +16,8 @@ declare interface Nft extends TileSetImage {
     height: number,
     url: string
 }
-const soundWeight = (x:integer, y:integer, x1:integer, y1:integer) => {
+
+const soundWeight = (x: integer, y: integer, x1: integer, y1: integer) => {
     return Phaser.Math.Distance.Between(x, y, x1, y1);
 };
 
@@ -24,7 +27,10 @@ const genNftNK = (name: string) => {
         key: `${name}set`
     }
 }
-
+// let x = document.getElementById("x");
+// let y = document.getElementById("y");
+// x!.innerText = String(0);
+// y!.innerText = String(0);
 export class InitScene extends Scene {
     private player!: Actor
     private cursorKeys!: Types.Input.Keyboard.CursorKeys
@@ -32,6 +38,8 @@ export class InitScene extends Scene {
     private tileset!: Object
     private readonly nftList!: Nft[]
     private assetNK!: TileSetImage[]
+    private verse!: Miniverse
+    private DLayerData!: Layer
 
     constructor() {
         super('init-scene');
@@ -52,6 +60,13 @@ export class InitScene extends Scene {
             url: "images/ape2.png"
         }]
         this.assetNK = []
+        this.DLayerData = window.layer
+    }
+
+    static getRandomAsset() {
+        let m = new Miniverse(miniverse)
+        return m.genRandomAsset()
+
     }
 
     preload(): void {
@@ -66,11 +81,11 @@ export class InitScene extends Scene {
         });
         staticSets.forEach(set => {
             LoadTileSetToScene(set.Config, this)
-                set.Config.forEach(x => {
-                    this.assetNK.push({
-                        ...genNftNK(x.name)
-                    })
+            set.Config.forEach(x => {
+                this.assetNK.push({
+                    ...genNftNK(x.name)
                 })
+            })
         })
         this.renderNFT()
         this.load.tilemapTiledJSON("map", this.tileset)
@@ -111,6 +126,8 @@ export class InitScene extends Scene {
             delay: 0,
         });
         instance.play();
+
+
     }
 
     update(time: number, delta: number) {
@@ -127,18 +144,22 @@ export class InitScene extends Scene {
             Math.min(this.map.phaserMap().heightInPixels * SCALE, this.map.phaserMap().widthInPixels * SCALE) -
             0.7;
 //@ts-ignore
-            this.sound.setVolume(vol < 0 ? 0 : vol);
+        this.sound.setVolume(vol < 0 ? 0 : vol);
 
     }
 
     private renderNFT(): void {
-        const verse = new Miniverse(miniverse)
+        this.verse = new Miniverse(miniverse)
         this.nftList.map((v) => {
-            verse.addNewNFT(v.x, v.y, v.name, v.url, this, v.width, v.height)
+            this.verse.addNewNFT(v.x, v.y, v.name, v.url, v.width, v.height, this)
         })
-        verse.genRandomAsset()
-        verse.initAssets()
-        this.tileset = verse.gettileset()
+        if (!window.layer) {
+            window.genLayer = this.verse.genRandomAsset();
+            this.verse.initAssets(window.genLayer)
+        } else {
+            this.verse.initAssets(window.layer)
+        }
+        this.tileset = this.verse.gettileset()
         console.log(this.tileset)
     }
 }

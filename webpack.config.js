@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -55,6 +56,16 @@ const config = {
     },
     resolve: {
         extensions: ['.ts', '.js'],
+        fallback: {
+            url: require.resolve('url'),
+            assert: require.resolve('assert'),
+            crypto: require.resolve('crypto-browserify'),
+            http: require.resolve('stream-http'),
+            https: require.resolve('https-browserify'),
+            os: require.resolve('os-browserify/browser'),
+            buffer: require.resolve('buffer'),
+            stream: require.resolve('stream-browserify'),
+        }
     },
     optimization: {
         minimize: true,
@@ -82,7 +93,11 @@ const config = {
         }),
         new CopyPlugin({
             patterns: [{from: "assets", to: "assets"}]
-        })
+        }),
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+            Buffer: ['buffer', 'Buffer'],
+        }),
     ],
     devServer: {
         port: 5000,

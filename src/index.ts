@@ -4,15 +4,21 @@ import './index.css'
 // @ts-ignore
 import M from 'materialize-css'
 import ignore from "ignore";
+import Chain from "./chain";
+import {pinJSONToIPFS} from "./ipfs";
+import {GetLayerMetaData, Layer} from "./util";
+
 
 declare global {
     interface Window {
         sizeChanged: () => void;
         game: Phaser.Game;
         enterverse: () => void
+        layer: Layer;
+        genLayer: Layer;
     }
 }
-const gameConfig: Types.Core.GameConfig = {
+let gameConfig: Types.Core.GameConfig = {
     scale: {
         parent: 'game-view',
         mode: Phaser.Scale.ScaleModes.RESIZE,
@@ -30,16 +36,40 @@ const gameConfig: Types.Core.GameConfig = {
         },
     }, canvasStyle: `width: 100%; height: 100%`, autoFocus: true, audio: {
         noAudio: false,
-    }, scene: [InitScene],
+    }, scene: [],
 }
 var modalInstance: any;
 var modalBottom: any;
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    let web3 = new Chain()
+    await web3.connectToWallet()
+    if (web3.connected && web3.alreadyMinted) {
+        let layerURL = await web3.getLayerDataURL()
+        let layer = await GetLayerMetaData(layerURL)
+        if (layer) {
+            window.layer = layer
+            console.log(layer)
+            gameConfig.scene = [InitScene]
+            window.game = new Game(gameConfig);
+        }
+    }else{
+        gameConfig.scene = [InitScene]
+        window.game = new Game(gameConfig);
+    }
     var elems = document.querySelectorAll('.sidenav');
     let modal = document.getElementById("modal1")
     modalInstance = M.Modal.init(modal)
     modalBottom = M.Modal.init(document.getElementById("modal2"))
     var instances = M.Sidenav.init(elems);
+    let mintTrigger = document.getElementById("mint");
+    mintTrigger!.addEventListener('click', () => {
+        let assets = window.genLayer
+        pinJSONToIPFS(assets).then(uri => {
+            web3.mint(uri);
+        })
+    })
+
+
 });
 const handlerInspector = (e: KeyboardEvent) => {
     if (e.key == 'x') {
@@ -68,5 +98,7 @@ document.addEventListener('keydown',
 );
 
 
-window.game = new Game(gameConfig);
+//window.game = new Game(gameConfig);
+
+
 

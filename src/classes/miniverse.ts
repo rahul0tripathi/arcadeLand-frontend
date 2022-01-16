@@ -5,7 +5,6 @@ import {ASSET_LAYER, NFT_LAYER} from "../config";
 import flowers from "../assets/tileset/tileimages/plants/flowers";
 import rarePlants from "../assets/tileset/tileimages/plants/rarePlants";
 import tree from "../assets/tileset/tileimages/trees/tree";
-import bush from "../assets/tileset/tileimages/bushes/bush";
 
 
 export default class Miniverse {
@@ -28,6 +27,7 @@ export default class Miniverse {
     }
 
     genRandomAsset() {
+        console.log("CLEED")
         // fixed flowers
         for (let i = 0; i < 8; i++) {
             this.renderSet.push(flowers.Config[RandomInRange(0, flowers.Config.length)])
@@ -46,9 +46,6 @@ export default class Miniverse {
             }
         }
 
-    }
-
-    initAssets() {
         let assetLayer = this.newLayerData(ASSET_LAYER)
         try {
             for (let set of staticSets) {
@@ -70,7 +67,6 @@ export default class Miniverse {
                     assetLayer.data = this.computeLayerData(this.assetMap[i.name], x, y, assetLayer.data)
                     break
                 } catch (err) {
-                    console.log(err)
                     if (err === RenderLayerErrors.LocationAlreadyOccupied) {
                         assetLayer.data = snapShot
                         x = RandomInRange(16, 80)
@@ -82,12 +78,26 @@ export default class Miniverse {
 
             }
         }
-        this.tileset.layers.push(assetLayer)
+        return assetLayer
 
     }
 
-    addNewNFT(initx: integer, inity: integer, key: string, url: string, scene: Scene, width: number, height: number): void {
-        scene.load.image(`${key}set`, url)
+    initAssets(assetLayer: Layer) {
+        this.tileset.layers.push(assetLayer)
+        for (let set of staticSets) {
+            for (let tile of set.Config) {
+                let temp_set = this.newTileSet(tile)
+                this.assetMap[temp_set.name] = temp_set
+                this.tileset.tilesets.push(temp_set)
+            }
+        }
+
+
+    }
+
+    addNewNFT(initx: integer, inity: integer, key: string, url: string, width: number, height: number, scene?: Scene,): void {
+        if (scene)
+            scene.load.image(`${key}set`, url)
         let config: TileSetConfig = {
             columns: width / 16,
             imageheight: height,
@@ -142,7 +152,6 @@ export default class Miniverse {
     }
 
     private computeLayerData(set: Tileset, x: integer, y: integer, layer: integer[]): integer[] {
-        console.log(set.name, x, y, layer)
         if (x > this.width || x < 0 || y < 0 || y > this.height) {
             throw RenderLayerErrors.InvalidPosition
         }

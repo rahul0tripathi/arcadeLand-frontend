@@ -1,4 +1,5 @@
 import * as phaser from "phaser";
+import axios from "axios";
 
 declare interface TileSetConfig {
     columns: number
@@ -97,6 +98,14 @@ enum RenderLayerErrors {
     ImageOutOfBounds,
     LocationAlreadyOccupied
 }
+const GetLayerMetaData = (uri: string): Promise<Layer | null> => {
+    console.log(uri)
+    return axios.get(uri).then(resp => {
+        return resp.data
+    }).catch(() => {
+        return null
+    })
+}
 
 export {
     ResolveAddressPath,
@@ -110,5 +119,6 @@ export {
     Root,
     Property,
     Layer,
-    RenderLayerErrors
+    RenderLayerErrors,
+    GetLayerMetaData
 }

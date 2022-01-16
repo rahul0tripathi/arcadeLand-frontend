@@ -31,16 +31,14 @@ export default class Chain {
 
             this.provider = new Web3(window.ethereum);
             // @ts-ignore
-            try {
-                let account = await this.provider.eth.getAccounts()
-                this.userAddress = account[0]
-            } catch (err) {
-                // @ts-ignore
-                await this.provider.currentProvider.enable()
-                let account = await this.provider.eth.getAccounts()
 
-                this.userAddress = account[0]
-            }
+
+            // @ts-ignore
+            await this.provider.currentProvider.enable()
+            let account = await this.provider.eth.getAccounts()
+
+            this.userAddress = account[0]
+
 
             let e = document.getElementById("address");
             if (e)
